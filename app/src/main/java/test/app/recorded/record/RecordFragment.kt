@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import test.app.recorded.R
 
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
