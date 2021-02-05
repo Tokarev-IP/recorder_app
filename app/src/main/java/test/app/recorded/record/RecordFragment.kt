@@ -7,12 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import test.app.recorded.R
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RecordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RecordFragment : Fragment() {
 
     override fun onCreateView(
