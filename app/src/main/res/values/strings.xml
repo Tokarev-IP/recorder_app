@@ -11,6 +11,8 @@
     <string name="dialog_text_delete">Удалить эту запись?</string>
     <string name="dialog_action_yes">Да</string>
     <string name="dialog_action_no">Нет</string>
+    <string name="recording_is_now">Запись производится</string>
+    <string name="recording_is_finish">Запись закончена</string>
 
     <string name="toast_recording_permissions">Без разрешения запись невозможна</string>
     <string name="notification_channel_id" translatable="false">RecordService</string>

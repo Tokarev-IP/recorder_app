@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat
 
 class RecordService: Service() {
 
-
     private var mFileName: String? = null
     private var mFilePath: String? = null
     private var mCountRecords: Int? = null
@@ -37,7 +36,9 @@ class RecordService: Service() {
     private val mJob = Job()
     private val mUiScope = CoroutineScope(Dispatchers.Main + mJob)
 
-    private val CHANNEL_ID="RecordService"
+    companion object {
+        var running = false
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -51,8 +52,9 @@ class RecordService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         mCountRecords = intent?.extras?.get("COUNT") as Int?
+
         startRecording()
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun startRecording() {
@@ -79,19 +81,19 @@ class RecordService: Service() {
     private fun createNotification(): Notification? {
         val mBuilder: NotificationCompat.Builder
                 = NotificationCompat.Builder(applicationContext, getString(R.string.notification_channel_id))
-            .setSmallIcon(R.drawable.ic_baseline_mic_24)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.notification_recording))
-            .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_baseline_mic_24)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.notification_recording))
+                .setOngoing(true)
         mBuilder.setContentIntent(
-            PendingIntent.getActivities(
-                applicationContext, 0, arrayOf(
-                    Intent(
-                        applicationContext,
-                        MainActivity::class.java
-                    )
+                PendingIntent.getActivities(
+                        applicationContext, 0, arrayOf(
+                        Intent(
+                                applicationContext,
+                                MainActivity::class.java
+                        )
                 ), 0
-            )
+                )
         )
         return mBuilder.build()
     }
@@ -114,33 +116,32 @@ class RecordService: Service() {
         } while (f.exists() && !f.isDirectory)
     }
 
-    private fun stopRecording(){
+    private fun stopRecording() {
         val recordingItem = RecordingItem()
 
         mRecorder?.stop()
         mElapsedMillis = System.currentTimeMillis() - mStartingTimeMillis
         mRecorder?.release()
         Toast.makeText(this,
-        getString(R.string.toast_recording_finish),
-        Toast.LENGTH_SHORT)
-                .show()
-
-        recordingItem.name = mFileName.toString()
+                getString(R.string.toast_recording_finish),
+                Toast.LENGTH_SHORT
+        ).show()
 
         recordingItem.name = mFileName.toString()
         recordingItem.filePath = mFilePath.toString()
         recordingItem.length = mElapsedMillis
         recordingItem.time = System.currentTimeMillis()
 
+
         mRecorder = null
 
         try {
             mUiScope.launch {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     mDatabase?.insert(recordingItem)
                 }
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("RecordService", "exception", e)
         }
     }
@@ -149,6 +150,7 @@ class RecordService: Service() {
         if (mRecorder != null) {
             stopRecording()
         }
+
         super.onDestroy()
     }
 
