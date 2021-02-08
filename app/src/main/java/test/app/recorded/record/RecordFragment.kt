@@ -42,8 +42,6 @@ class RecordFragment : Fragment() {
             container, false
         )
 
-        val intent: Intent =  Intent(activity, RecordService::class.java)
-
         database = context?.let { RecordDatabase.getInstance(it).recordDatabaseDao }
 
         mainActivity = activity as MainActivity
@@ -61,6 +59,8 @@ class RecordFragment : Fragment() {
         }
 
         binding.playButton.setOnClickListener {
+            val intent: Intent =  Intent(activity, RecordService::class.java)
+
             if (ContextCompat.checkSelfPermission(requireContext(),
                             android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(
@@ -68,7 +68,6 @@ class RecordFragment : Fragment() {
             } else {
                 if (RecordService.running) {
 
-                    Toast.makeText(activity, R.string.recording_is_finish, Toast.LENGTH_SHORT).show()
                     binding.playButton.setImageResource(R.drawable.ic_baseline_mic_24)
                     activity?.stopService(intent)
                     activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

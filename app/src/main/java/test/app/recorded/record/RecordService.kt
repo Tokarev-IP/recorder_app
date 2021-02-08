@@ -151,6 +151,11 @@ class RecordService: Service() {
             stopRecording()
         }
 
+        Toast.makeText(this,
+                "onDestroy",
+                Toast.LENGTH_SHORT
+        ).show()
+
         super.onDestroy()
     }
 
